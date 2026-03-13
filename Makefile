@@ -1,9 +1,28 @@
-CC=gcc
-SRC=src
-BIN=bin
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
 
-build:
-	$(CC) $(SRC)/main.c -o $(BIN)/main
+SRC_DIR = src
+BUILD_DIR = build
+BIN_DIR = bin
+TARGET = $(BIN_DIR)/main
 
-run: build
-	$(BIN)/main
+SRC_FILES:=$(shell find $(SRC_DIR) -name "*.c")
+OBJ_FILES:=$(SRC_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ_FILES)
+	mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(BUILD_DIR)/* $(TARGET)
+
+run: all
+	$(TARGET)
+
+.PHONY: all clean

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include "tcpserver.h"
+#include "tcpclient.h"
 
 #define VERSION_STRING "2026.03-dev"
 
@@ -15,6 +17,8 @@ int main(int argc, char** argv)
     }
 
     // TODO: header files? tcp? icmp ping? then http.
+    start_tcp_server();
+    start_tcp_client();
 
     return exit_clean();
 }
