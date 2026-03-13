@@ -1,16 +1,20 @@
 #include <stdio.h>
 
+#define VERSION_STRING "2026.03-dev"
+
 int exit_clean();
 
 int main(int argc, char** argv)
 {
-    printf("Welcome to da micro server (usrv).\n");
+    printf("%s%s\n", "Welcome to da micro server (usrv) ver. ", VERSION_STRING);
 
     printf("cmdline: ");
     for (int i = 0; i < argc; i++)
     {
         printf("%s ", argv[i]);
     }
+
+    // TODO: header files? tcp? icmp ping? then http.
 
     return exit_clean();
 }
