@@ -10,11 +10,10 @@
 void server_handle_tcp_comm(int connfd)
 {
     char buf[BUF_SIZE];
-    int msg_count = 0;
-    while (msg_count < 5) {
+    while (1) {
         bzero(buf, BUF_SIZE);
         read(connfd, buf, sizeof(buf));
-        printf("Recv client msg: %s\n", buf);
+        printf("%s", buf);
     }
 }
 

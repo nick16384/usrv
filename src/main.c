@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>
 #include "tcpserver.h"
 #include "tcpclient.h"
 
 #define VERSION_STRING "2026.03-dev"
 
-int exit_clean();
+void exit_clean(int dummy);
 
 int main(int argc, char** argv)
 {
@@ -16,16 +18,20 @@ int main(int argc, char** argv)
         printf("%s ", argv[i]);
     }
 
+    signal(SIGINT, exit_clean);
+    signal(SIGTERM, exit_clean);
+
     // TODO: header files? tcp? icmp ping? then http.
     start_tcp_server();
     start_tcp_client();
 
-    return exit_clean();
+    exit_clean(0);
+    return 0;
 }
 
-inline int exit_clean()
+inline void exit_clean(int dummy)
 {
     // TODO: do some cleanup when necessary
-    printf("\n");
-    return 0;
+    printf("\nclosing...\n");
+    exit(0);
 }

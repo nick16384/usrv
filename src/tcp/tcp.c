@@ -11,6 +11,7 @@
 #define SOCK_PROTO_DEFAULT 0
 #define SOCK_BIND_STATUS_SUCCESS 0
 #define SOCK_LISTEN_STATUS_SUCCESS 0
+#define SOCK_
 // Errors
 #define ERR_SOCK_CREATION_FAILED 10000
 #define ERR_SOCK_BIND_FAILED     10001
@@ -68,4 +69,9 @@ int wait_accept_tcp_conn(int sockfd)
     printf("accepted client connection.\n");
 
     return connfd;
+}
+
+void wait_connect_to_tcp_server(int sockfd, struct sockaddr_in* serveraddr)
+{
+    return;
 }
