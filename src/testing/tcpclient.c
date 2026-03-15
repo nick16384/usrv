@@ -16,13 +16,13 @@ void client_start(int port)
     sockfd = tcp_init(port);
 }
 
-void client_connect(char *address_str, unsigned short port)
+void client_connect(char *address_str, in_port_t port)
 {
     struct sockaddr_in serveraddr;
     bzero(&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = inet_addr(address_str);
-    serveraddr.sin_port = htons(port);
+    serveraddr.sin_port = port;
     tcp_connect(sockfd, &serveraddr);
 }
 

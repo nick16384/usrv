@@ -23,10 +23,10 @@ static void handle_comm(void)
         int status = read(connfd, buf, sizeof(buf));
         switch (status) {
             case CONN_READ_ERROR:
-                perror("error reading from connection.");
+                perror("[server] error reading from connection.");
                 exit(ERR_CONN_READ_ERROR);
             case CONN_READ_EOF:
-                printf("receive terminated with EOF.");
+                printf("[server] receive terminated with EOF.");
                 return;
         }
         printf("%s", buf);
@@ -42,6 +42,7 @@ void server_start(unsigned short port)
 
 void server_exit(void)
 {
+    printf("[server] closing server and TCP connection.\n");
     sockfd:
     if (sockfd == -1) { goto connfd; }
     close(sockfd);

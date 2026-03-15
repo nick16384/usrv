@@ -29,12 +29,12 @@ int main(int argc, char** argv)
     signal(SIGTERM, exit_clean);
     
     if (strncmp(argv[1], "server", 6) == 0) {
-        printf("launching server.\n");
+        printf("[main] launching server.\n");
         server_start(1234);
         server_exit();
     }
     else if (strncmp(argv[1], "client", 6) == 0) {
-        printf("launching client.\n");
+        printf("[main] launching client.\n");
         client_start(1235);
         client_connect("127.0.0.1", 1234);
         const char *msg = "Hello, server!";
@@ -49,8 +49,8 @@ int main(int argc, char** argv)
 inline void exit_clean(int signal)
 {
     // TODO: do some cleanup when necessary
-    printf("\nreceived signal %d\n", signal);
-    printf("closing...\n");
+    printf("\n[main] received signal %d\n", signal);
+    printf("[main] closing...\n");
     server_exit();
     exit(0);
 }
