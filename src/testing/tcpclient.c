@@ -1,30 +1,41 @@
-#include <unistd.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <strings.h>
-#include "tcp/tcp.h"
+#include <unistd.h>
+#include "usrv/tcp/tcp.h"
+#include "usrv/testing/tcpclient.h"
 
-#define PORT 1234
-#define ADDR inet_addr("127.0.0.1")
 #define MAX_CONNECTIONS 1
-#define BUF_SIZE 8
 
-// FIXME: Compile test client as separate binary and add testing util functions
+int sockfd = -1;
 
-/// @brief Expects a connection file descriptor and handles communication with the client. The method blocks indefinitely.
-/// @param connfd A previously established connection file descriptor
-void client_handle_tcp_comm(int connfd)
+void client_start(int port)
 {
-    char buf[BUF_SIZE];
-    char* str = "Hello, server!";
-    write(connfd, str, sizeof(str));
-    return;
+    sockfd = tcp_init(port);
 }
 
-void start_tcp_client()
+void client_connect(char *address_str, unsigned short port)
 {
-    return;
-    int sockfd = init_tcp_conn(PORT, MAX_CONNECTIONS);
-    int connfd = wait_accept_tcp_conn(sockfd);
-    client_handle_tcp_comm(connfd);
+    struct sockaddr_in serveraddr;
+    bzero(&serveraddr, sizeof(serveraddr));
+    serveraddr.sin_family = AF_INET;
+    serveraddr.sin_addr.s_addr = inet_addr(address_str);
+    serveraddr.sin_port = htons(port);
+    tcp_connect(sockfd, &serveraddr);
+}
+
+void client_send(char *msg, int n)
+{
+    printf("sending client message: %s\n", msg);
+    write(sockfd, msg, n);
+}
+
+void client_exit(void)
+{
+    // TODO: tell the server to shutdown the connection?
+    if (sockfd == -1) { return; }
     close(sockfd);
-    close(connfd);
+    sockfd = -1;
 }

@@ -1,9 +1,10 @@
 #include <unistd.h>
 #include <strings.h>
 #include <stdio.h>
-#include "tcp/tcp.h"
+#include <stdlib.h>
+#include "usrv/tcp/tcp.h"
+#include "usrv/tcpserver/tcpserver.h"
 
-#define PORT 1234
 #define MAX_CONNECTIONS 1
 #define BUF_SIZE 32
 
@@ -12,9 +13,9 @@
 
 #define ERR_CONN_READ_ERROR 20000
 
-int sockfd, connfd;
+static int sockfd = -1, connfd = -1;
 
-void handle_comm()
+static void handle_comm(void)
 {
     char buf[BUF_SIZE];
     while (1) {
@@ -34,13 +35,21 @@ void handle_comm()
 
 void server_start(unsigned short port)
 {
-    sockfd = init_tcp_conn(port, MAX_CONNECTIONS);
-    connfd = wait_accept_tcp_conn(sockfd);
-    handle_comm(connfd);
+    sockfd = tcp_init(port);
+    connfd = tcp_wait_accept_conn(sockfd, MAX_CONNECTIONS);
+    handle_comm();
 }
 
-void server_exit()
+void server_exit(void)
 {
+    sockfd:
+    if (sockfd == -1) { goto connfd; }
     close(sockfd);
+    sockfd = -1;
+
+    connfd:
+    if (connfd == -1) { return; }
     close(connfd);
+    connfd = -1;
+    return;
 }

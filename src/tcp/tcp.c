@@ -6,19 +6,21 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "usrv/tcp/tcp.h"
 
 // More descriptive aliases
 #define SOCK_PROTO_DEFAULT 0
 #define SOCK_BIND_STATUS_SUCCESS 0
 #define SOCK_LISTEN_STATUS_SUCCESS 0
-#define SOCK_
+#define CONNECT_STATUS_SUCCESS 0
 // Errors
 #define ERR_SOCK_CREATION_FAILED 10000
 #define ERR_SOCK_BIND_FAILED     10001
 #define ERR_SOCK_LISTEN_FAILED   10002
 #define ERR_CONN_ACCEPT_FAILED   10003
+#define ERR_CONN_CONNECT_FAILED  10004
 
-int init_tcp_conn(unsigned short port, int max_connections)
+int tcp_init(unsigned short port)
 {
     // initialize connection
     int sockfd;
@@ -45,6 +47,11 @@ int init_tcp_conn(unsigned short port, int max_connections)
     }
     printf("socket successfully bound.\n");
 
+    return sockfd;
+}
+
+int tcp_wait_accept_conn(int sockfd, int max_connections)
+{
     int status_listen = listen(sockfd, max_connections);
     if (status_listen != SOCK_LISTEN_STATUS_SUCCESS) {
         perror("socket listen failed.");
@@ -52,11 +59,6 @@ int init_tcp_conn(unsigned short port, int max_connections)
     }
     printf("server listening.\n");
 
-    return sockfd;
-}
-
-int wait_accept_tcp_conn(int sockfd)
-{
     int connfd;
     struct sockaddr_in clientsock;
     socklen_t client_len = sizeof(clientsock);
@@ -71,7 +73,13 @@ int wait_accept_tcp_conn(int sockfd)
     return connfd;
 }
 
-void wait_connect_to_tcp_server(int sockfd, struct sockaddr_in* serveraddr)
+void tcp_connect(int sockfd, struct sockaddr_in *addr)
 {
-    return;
+    printf("connect: %d\n", addr->sin_addr.s_addr >> 24);
+    int status_connect = connect(sockfd, (struct sockaddr*)&addr, sizeof(addr));
+    if (status_connect != CONNECT_STATUS_SUCCESS) {
+        perror("error while connecting. aborting.");
+        exit(ERR_CONN_CONNECT_FAILED);
+    }
+    printf("successfully established tcp client connection.\n");
 }

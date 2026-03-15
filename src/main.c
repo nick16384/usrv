@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
-#include "tcpserver.h"
-#include "tcpclient.h"
+#include <string.h>
+#include "usrv/tcpserver/tcpserver.h"
+#include "usrv/testing/tcpclient.h"
 
 #define VERSION_STRING "2026.03-dev"
 
@@ -17,21 +18,39 @@ int main(int argc, char** argv)
     {
         printf("%s ", argv[i]);
     }
+    printf("\n");
+
+    if (argc < 2) {
+        perror("Please specify 'server' or 'client'.");
+        exit(0);
+    }
 
     signal(SIGINT, exit_clean);
     signal(SIGTERM, exit_clean);
-
-    // TODO: header files? tcp? icmp ping? then http.
-    server_start();
-    start_tcp_client();
+    
+    if (strncmp(argv[1], "server", 6) == 0) {
+        printf("launching server.\n");
+        server_start(1234);
+        server_exit();
+    }
+    else if (strncmp(argv[1], "client", 6) == 0) {
+        printf("launching client.\n");
+        client_start(1235);
+        client_connect("127.0.0.1", 1234);
+        const char *msg = "Hello, server!";
+        client_send(msg, sizeof(msg));
+        client_exit();
+    }
 
     exit_clean(0);
     return 0;
 }
 
-inline void exit_clean(int dummy)
+inline void exit_clean(int signal)
 {
     // TODO: do some cleanup when necessary
-    printf("\nclosing...\n");
+    printf("\nreceived signal %d\n", signal);
+    printf("closing...\n");
+    server_exit();
     exit(0);
 }
