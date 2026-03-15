@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     signal(SIGTERM, exit_clean);
 
     // TODO: header files? tcp? icmp ping? then http.
-    start_tcp_server();
+    server_start();
     start_tcp_client();
 
     exit_clean(0);

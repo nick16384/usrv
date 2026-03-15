@@ -18,7 +18,7 @@
 #define ERR_SOCK_LISTEN_FAILED   10002
 #define ERR_CONN_ACCEPT_FAILED   10003
 
-int init_tcp_conn(int port, int max_connections)
+int init_tcp_conn(unsigned short port, int max_connections)
 {
     // initialize connection
     int sockfd;
