@@ -1,7 +1,7 @@
 #ifndef TCP_H
 #define TCP_H
 
-/// @brief Initialize a TCP connection.
+/// @brief Initialize a TCP socket.
 /// @return The socket file descriptor (FD)
 int tcp_init(unsigned short port);
 
