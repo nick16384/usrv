@@ -14,13 +14,14 @@ Required dependencies:
 To run the server, just clone the repository and enter the following commands in the cloned directory:
 
 ```
-make run
+make all
+bin/main server
 ```
 
 To build the main executable without running, execute
 
 ```
-make build
+make all
 ```
 
 ### Command-line arguments:
