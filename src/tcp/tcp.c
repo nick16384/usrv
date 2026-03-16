@@ -75,13 +75,15 @@ int tcp_wait_accept_conn(int sockfd, int max_connections)
 
 void tcp_connect(int sockfd, struct sockaddr_in *addr)
 {
-    // address is in little endian -> must reverse to print IPv4
+    // address and port are in little endian -> must reverse to print IPv4
+    // convert from LE to BE
+    unsigned short port_be = htons(addr->sin_port);
     printf("[tcp] connect: %d.%d.%d.%d:%d\n",
         (addr->sin_addr.s_addr & 0x000000ff) >> 0,
         (addr->sin_addr.s_addr & 0x0000ff00) >> 8,
         (addr->sin_addr.s_addr & 0x00ff0000) >> 16,
         (addr->sin_addr.s_addr & 0xff000000) >> 24,
-        addr->sin_port);
+        port_be);
     int status_connect = connect(sockfd, (struct sockaddr*)&addr, sizeof(addr));
     if (status_connect != CONNECT_STATUS_SUCCESS) {
         perror("[tcp] error while connecting. aborting.");
