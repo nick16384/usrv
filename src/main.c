@@ -6,6 +6,7 @@
 #include "usrv/testing/tcpclient.h"
 
 #define VERSION_STRING "2026.03-dev"
+#define EXIT_SIGNAL_NONE -1
 
 void exit_clean(int dummy);
 
@@ -31,26 +32,26 @@ int main(int argc, char** argv)
     if (strncmp(argv[1], "server", 6) == 0) {
         printf("[main] launching server.\n");
         server_start(1234);
-        server_exit();
     }
     else if (strncmp(argv[1], "client", 6) == 0) {
         printf("[main] launching client.\n");
         client_start(1235);
         client_connect("127.0.0.1", 1234);
         const char *msg = "Hello, server!";
-        client_send(msg, sizeof(msg));
-        client_exit();
+        client_send(msg, strlen(msg));
     }
 
-    exit_clean(0);
+    exit_clean(EXIT_SIGNAL_NONE);
     return 0;
 }
 
 inline void exit_clean(int signal)
 {
     // TODO: do some cleanup when necessary
-    printf("\n[main] received signal %d\n", signal);
+    if (signal != EXIT_SIGNAL_NONE)
+        printf("\n[main] received signal %d\n", signal);
     printf("[main] closing...\n");
     server_exit();
+    client_exit();
     exit(0);
 }

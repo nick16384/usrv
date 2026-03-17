@@ -11,8 +11,6 @@
 #define CONN_READ_EOF 0
 #define CONN_READ_ERROR -1
 
-#define ERR_CONN_READ_ERROR 20000
-
 static int sockfd = -1, connfd = -1;
 
 static void handle_comm(void)
@@ -20,13 +18,13 @@ static void handle_comm(void)
     char buf[BUF_SIZE];
     while (1) {
         bzero(buf, BUF_SIZE);
-        int status = read(connfd, buf, sizeof(buf));
-        switch (status) {
+        int bytesRead = read(connfd, buf, BUF_SIZE);
+        switch (bytesRead) {
             case CONN_READ_ERROR:
-                perror("[server] error reading from connection.");
-                exit(ERR_CONN_READ_ERROR);
+                perror("\n[server] error reading from connection.");
+                return;
             case CONN_READ_EOF:
-                printf("[server] receive terminated with EOF.");
+                printf("\n[server] receive terminated with EOF.\n");
                 return;
         }
         printf("%s", buf);
@@ -35,8 +33,8 @@ static void handle_comm(void)
 
 void server_start(unsigned short port)
 {
-    sockfd = tcp_init(port);
-    connfd = tcp_wait_accept_conn(sockfd, MAX_CONNECTIONS);
+    sockfd = tcp_init();
+    connfd = tcp_listen(sockfd, port, MAX_CONNECTIONS);
     handle_comm();
 }
 
