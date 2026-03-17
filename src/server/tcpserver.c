@@ -34,8 +34,12 @@ static void handle_comm(void)
 void server_start(unsigned short port)
 {
     sockfd = tcp_init();
-    connfd = tcp_listen(sockfd, port, MAX_CONNECTIONS);
-    handle_comm();
+    tcp_bind(sockfd, port);
+    while (1)
+    {
+        connfd = tcp_listen(sockfd, MAX_CONNECTIONS);
+        handle_comm();
+    }
 }
 
 void server_exit(void)

@@ -29,7 +29,7 @@ int tcp_init()
     return sockfd;
 }
 
-int tcp_listen(int sockfd, unsigned short port, int max_connections)
+void tcp_bind(int sockfd, unsigned short port)
 {
     struct sockaddr_in serveraddr;
     bzero(&serveraddr, sizeof(serveraddr));
@@ -44,7 +44,10 @@ int tcp_listen(int sockfd, unsigned short port, int max_connections)
         exit(TCP_ERR_SOCK_BIND_FAILED);
     }
     printf("[tcp] socket successfully bound.\n");
+}
 
+int tcp_listen(int sockfd, int max_connections)
+{
     int status_listen = listen(sockfd, max_connections);
     if (status_listen != SOCK_LISTEN_STATUS_SUCCESS) {
         perror("[tcp] socket listen failed.");

@@ -12,7 +12,7 @@ void exit_clean(int dummy);
 
 int main(int argc, char** argv)
 {
-    printf("%s%s\n", "Welcome to da micro server (usrv) ver. ", VERSION_STRING);
+    printf("Welcome to da micro server (usrv) ver. %s\n", VERSION_STRING);
 
     printf("cmdline: ");
     for (int i = 0; i < argc; i++)
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
         client_start(1235);
         client_connect("127.0.0.1", 1234);
         const char *msg = "Hello, server!";
-        client_send(msg, strlen(msg));
+        client_send(msg, strlen(msg) + 1);
     }
 
     exit_clean(EXIT_SIGNAL_NONE);
